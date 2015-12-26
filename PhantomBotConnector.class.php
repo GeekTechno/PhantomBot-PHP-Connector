@@ -59,7 +59,7 @@ class PhantomBotConnector
    * @param string $fileName
    * @return array
    */
-  public function get($fileName)
+  public function getTable($fileName)
   {
     if (substr($fileName, 0, 10) != '/inistore/') {
       $fileName = '/inistore/' . $fileName;
@@ -74,15 +74,33 @@ class PhantomBotConnector
 
     $this->close();
 
-    if ($result != '') {
-      $temp = preg_split('/\n/', trim($result));
-      $result = [];
-      foreach ($temp as $row) {
-        array_push($result, explode('=', $row));
-      }
+    return [$this->splitFile($result, true), $status, $errNo, $errMsg];
+  }
+
+  /**
+   * @param string $filePath
+   * @return array
+   */
+  public function getAddonFile($filePath)
+  {
+    if (substr($filePath, 0, 1) == '/') {
+      $filePath = substr($filePath, 1);
     }
 
-    return [$result, $status, $errNo, $errMsg];
+    if (substr($filePath, 0, 8) != 'addons/') {
+      $filePath = '/addons/' . $filePath;
+    }
+
+    $this->init($filePath);
+
+    $result = curl_exec($this->curl);
+    $errNo = curl_errno($this->curl);
+    $errMsg = curl_error($this->curl);
+    $status = curl_getinfo($this->curl);
+
+    $this->close();
+
+    return [$this->splitFile($result), $status, $errNo, $errMsg];
   }
 
   private function close()
@@ -104,5 +122,32 @@ class PhantomBotConnector
     if (defined('CURLOPT_IPRESOLVE')) {
       curl_setopt($this->curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
     }
+  }
+
+  /**
+   * @param string $file
+   * @param bool $isIni
+   * @return array
+   */
+  private function splitFile($file, $isIni = false)
+  {
+    if ($file == '') {
+      return [];
+    }
+
+    $splitFile = preg_split('/\n/', trim($file));
+    $result = [];
+
+    foreach ($splitFile as $line) {
+      $splitLine = explode('=', $line);
+
+      if ($isIni) {
+        $result[$splitLine[0]] = $splitLine[1];
+      } else {
+        $result[] = $line;
+      }
+    }
+
+    return $result;
   }
 }

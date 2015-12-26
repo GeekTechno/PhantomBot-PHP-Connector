@@ -10,7 +10,7 @@ This PHP script is made to simplify using PhantomBot's data on your website or a
   *You can find the token in botlogin.txt within the folder of your PhantomBot installation.*
   - **port**: This would be the port on wich PhantomBot is listening for incomming HTTP requests.  
   *Generally this will be 25000, you can ommit this parameter if you have not changed this setting in PhantomBot.*
-3. You can now use the "get" method, with the filename/tablename and this will return an array containing the following:
+3. You can now use the "getTable" or "getAddonFile" method, with the filename/tablename and this will return an array containing the following:
   - **0**: An array containing the information retrieved from PhantomBot.
   - **1**: An array containing cUrl's information about the request.
   - **2**: The cUrl status number of the request.
