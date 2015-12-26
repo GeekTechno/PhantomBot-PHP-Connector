@@ -56,6 +56,8 @@ class PhantomBotConnector
   }
 
   /**
+   * Get all records from a table in PhantomBot.
+   * Ex: "getTable('points')" would return all rows in the points table
    * @param string $fileName
    * @return array
    */
@@ -78,6 +80,8 @@ class PhantomBotConnector
   }
 
   /**
+   * Get a file from the "addons" folder as array.
+   * Ex: "getAddonFile('youtubePlayer/currentsong.txt')" would return all lines in ./addons/youtubePlayer/currensong.txt
    * @param string $filePath
    * @return array
    */
@@ -87,7 +91,7 @@ class PhantomBotConnector
       $filePath = substr($filePath, 1);
     }
 
-    if (substr($filePath, 0, 8) != 'addons/') {
+    if (substr($filePath, 0, 7) != 'addons/') {
       $filePath = '/addons/' . $filePath;
     }
 
