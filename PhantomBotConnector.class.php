@@ -58,6 +58,7 @@ class PhantomBotConnector
   /**
    * Get all records from a table in PhantomBot.
    * Ex: "getTable('points')" would return all rows in the points table
+   *
    * @param string $fileName
    * @return array
    */
@@ -82,6 +83,7 @@ class PhantomBotConnector
   /**
    * Get a file from the "addons" folder as array.
    * Ex: "getAddonFile('youtubePlayer/currentsong.txt')" would return all lines in ./addons/youtubePlayer/currensong.txt
+   *
    * @param string $filePath
    * @return array
    */
@@ -107,6 +109,64 @@ class PhantomBotConnector
     return [$this->splitFile($result), $status, $errNo, $errMsg];
   }
 
+  /**
+   * Get a file from the "web" folder as array.
+   * Ex: "getWebFile('currentsong.txt')" would return all lines in ./web/currensong.txt
+   *
+   * @param string $filePath
+   * @return array
+   */
+  public function getWebFile($filePath)
+  {
+    if (substr($filePath, 0, 1) == '/') {
+      $filePath = substr($filePath, 1);
+    }
+
+    if (substr($filePath, 0, 7) != 'web/') {
+      $filePath = '/web/' . $filePath;
+    }
+
+    $this->init($filePath);
+
+    $result = curl_exec($this->curl);
+    $errNo = curl_errno($this->curl);
+    $errMsg = curl_error($this->curl);
+    $status = curl_getinfo($this->curl);
+
+    $this->close();
+
+    return [$this->splitFile($result), $status, $errNo, $errMsg];
+  }
+
+  /**
+   * Get a file from the "logs" folder as array.
+   * Ex: "getLogFile('logfile.txt')" would return all lines in ./logs/logfile.txt
+   *
+   * @param string $filePath
+   * @return array
+   */
+  public function getLogFile($filePath)
+  {
+    if (substr($filePath, 0, 1) == '/') {
+      $filePath = substr($filePath, 1);
+    }
+
+    if (substr($filePath, 0, 7) != 'logs/') {
+      $filePath = '/logs/' . $filePath;
+    }
+
+    $this->init($filePath);
+
+    $result = curl_exec($this->curl);
+    $errNo = curl_errno($this->curl);
+    $errMsg = curl_error($this->curl);
+    $status = curl_getinfo($this->curl);
+
+    $this->close();
+
+    return [$this->splitFile($result), $status, $errNo, $errMsg];
+  }
+  
   private function close()
   {
     curl_close($this->curl);
